@@ -1,3 +1,9 @@
+<?php
+session_start();
+require __DIR__ . '/connection.php';
+$error = ''; $success = '';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +15,7 @@
 </head>
 
 <body>
-    <h1> Sign In For Existing Users </h1>
+    <h2> Sign In </h2>
     
     <form action="">
         <label for="first-name"> First Name </label>
