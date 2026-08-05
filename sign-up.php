@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +17,7 @@
     <!-- Patients are automatically added into the users database -->
     <!-- The rest are manually added -->
 
-    <form action="">
+    <form action="POST">
         <label for="first-name"> First Name </label>
         <input id="first-name" name="first-name" type="text">
 
