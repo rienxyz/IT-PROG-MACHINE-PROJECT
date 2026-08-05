@@ -1,5 +1,15 @@
 <?php
 session_start();
+require __DIR__ . '/connection.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $firstName = mysqli_real_escape_string($connection, trim($_POST['first-name']));
+    $lastName = mysqli_real_escape_string($connection, trim($_POST['last-name']));
+    $email = mysqli_real_escape_string($connection, trim($_POST['email']));
+    $password = mysqli_real_escape_string($connection, trim($_POST['password']));
+
+    $query = 'INSERT INTO users (first_name, last_name) VALUES ($firstName, $lastName)';
+}
 ?>
 
 <!DOCTYPE html>
