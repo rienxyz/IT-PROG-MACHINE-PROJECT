@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS `appointment_db`.`users` (
     `user_id` INT NOT NULL AUTO_INCREMENT,
     `first_name` VARCHAR(45) NULL,
     `last_name` VARCHAR(45) NULL,
+    `e_mail` VARCHAR(45) NULL,
+    `password` VARCHAR(45) NULL,
     `role` ENUM ('patient', 'secretary', 'doctor', 'admin') NULL,
     `account_status` ENUM ('active', 'inactive') NULL,
     `insurance` VARCHAR(45) NULL,
