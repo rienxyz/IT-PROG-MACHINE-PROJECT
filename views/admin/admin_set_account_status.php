@@ -1,18 +1,20 @@
 <?php
-require_once 'check_session.php';
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+if (!isset($_SESSION['account_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../login.php?error=unauthorized");
+    exit();
+}
 require_once '../db.php';
 
-if (isset($_GET['user_id']) && isset($_GET['current_status'])) {
-    $userId = (int)$_GET['user_id'];
-    
-    
+if (isset($_GET['account_id']) && isset($_GET['current_status'])) {
+    $accountId = (int)$_GET['account_id'];
     $newStatus = ($_GET['current_status'] === 'active') ? 'inactive' : 'active';
 
-    $stmt = $pdo->prepare("UPDATE users SET account_status = ? WHERE user_id = ?");
-    $stmt->execute([$newStatus, $userId]);
+    $stmt = mysqli_prepare($connection, "UPDATE accounts SET activity_status = ? WHERE account_id = ?");
+    mysqli_stmt_bind_param($stmt, "si", $newStatus, $accountId);
+    mysqli_stmt_execute($stmt);
 }
 
-
-header("Location: read_user.php");
+header("Location: admin_read_account.php");
 exit();
 ?>
