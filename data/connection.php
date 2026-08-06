@@ -1,6 +1,6 @@
 <?php
 $localhost = 'localhost:3308';
-$database = 'mls_db';
+$database = 'appointment_db';
 $username = 'root';
 $password = '';
 
