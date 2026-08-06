@@ -2,31 +2,64 @@
 <html lang="en">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title> MLS · Sign Up </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title> MLS · Patient Registration </title>
 </head>
 
 <body>
-    <h1> Sign Up For New Users </h1>
-    <!-- Patients are automatically added into the users database -->
-    <!-- The rest are manually added -->
+    <h1> Patient Registration </h1>
+    <p> Full name, phone, email, insurance, etc. </p>
 
-    <form action="">
-        <label for="first-name"> First Name </label>
-        <input id="first-name" name="first-name" type="text">
+    <form>
+        <div>
+            <label for="first-name"> First Name </label>
+            <input id="first-name" name="first-name" type="text">
+        </div>
 
-        <label for="last-name"> Last Name </label>
-        <input name="last-name" type="text" id="last-name">
+        <div>
+            <label for="last-name"> Last Name </label>
+            <input name="last-name" type="text" id="last-name">
+        </div>
 
-        <label for="email"> E-Mail </label>
-        <input id="email" name="email" type="email">
+        <div>
+            <label for="phone"> Phone </label>
+            <input type="tel" id="phone" placeholder="+63 912 345 6789">
+        </div>
 
-        <label for="password"> Password </label>
-        <input id="password" name="password" type="password">
+        <div>
+            <label for="email"> Email </label>
+            <input type="email" id="email" placeholder="maria@example.com">
+        </div>
 
-        <button type="submit"> Sign Up </button>
+        <div>
+            <label for="hmo"> HMO / Insurance </label>
+            <select id="hmo">
+                <option> Maxicare </option>
+                <option> Intellicare </option>
+                <option> MediCard </option>
+                <option> Other </option>
+            </select>
+        </div>
+
+        <div>
+            <label for="specialty"> Preferred specialty </label>
+            <select id="specialty">
+                <option> Internal Medicine </option>
+                <option> Orthopedics </option>
+                <option> Dermatology </option>
+                <option> Gastroenterology </option>
+                <option> Neurology </option>
+                <option> Reproductive Health </option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit"> Register & continue </button>
+        </div>
     </form>
 </body>
 

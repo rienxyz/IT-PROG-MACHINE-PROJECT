@@ -12,12 +12,6 @@
     <h1> Sign In For Existing Users </h1>
     
     <form action="">
-        <label for="first-name"> First Name </label>
-        <input id="first-name" name="first-name" type="text">
-
-        <label for="last-name"> Last Name </label>
-        <input name="last-name" type="text" id="last-name">
-
         <label for="email"> E-Mail </label>
         <input id="email" name="email" type="email">
 
