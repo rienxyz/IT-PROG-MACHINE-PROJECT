@@ -1,7 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 if (!isset($_SESSION['account_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../login.php?error=unauthorized");
+    header("Location: ../../sign_in.php?error=unauthorized");
     exit();
 }
 require_once '../db.php';
