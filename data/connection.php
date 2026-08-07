@@ -1,5 +1,5 @@
 <?php
-$localhost = 'localhost:3306';
+$localhost = 'localhost:3308';
 $database = 'appointment_db';
 $username = 'root';
 $password = '';
