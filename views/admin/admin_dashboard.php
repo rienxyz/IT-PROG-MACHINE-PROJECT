@@ -2,7 +2,7 @@
 <?php
 
 session_start();
-
+require_once __DIR__ . '/admin_auth.php';
 require_once __DIR__ . '/../../data/connection.php';
 
 /*
