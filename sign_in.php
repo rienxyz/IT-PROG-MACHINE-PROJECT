@@ -1,7 +1,7 @@
 <?php
 session_start();
 require __DIR__ . "/data/connection.php";
-$error = $success = "";
+$error = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = mysqli_real_escape_string($connection, trim($_POST["email"]));
@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         header("location: views/" . $_SESSION["role"] . "/" . $_SESSION["role"] . "_dashboard.php");
         exit();
     } else {
-        $error = "Invalid email or password.";
+        $error = "Invalid credentials, please try again!";
     }
 }
 ?>
@@ -37,15 +37,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
     <h2> Sign In </h2>
 
+    <div>
+        <?php echo $error ?: '' ?>
+    </div>
+
     <form method="POST">
         <div>
             <label for="email"> E-Mail </label>
-            <input id="email" name="email" type="email">
+            <input name="email" id="email" type="email" placeholder="email@domain.com" required>
         </div>
 
         <div>
             <label for="password"> Password </label>
-            <input id="password" name="password" type="password">
+            <input name="password" id="password" type="password" placeholder="********" required>
         </div>
 
         <div>
