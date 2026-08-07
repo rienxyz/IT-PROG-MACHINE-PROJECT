@@ -18,12 +18,6 @@ $error = ''; $success = '';
     <h2> Sign In </h2>
     
     <form action="">
-        <label for="first-name"> First Name </label>
-        <input id="first-name" name="first-name" type="text">
-
-        <label for="last-name"> Last Name </label>
-        <input name="last-name" type="text" id="last-name">
-
         <label for="email"> E-Mail </label>
         <input id="email" name="email" type="email">
 

@@ -1,82 +1,65 @@
-<?php
-session_start();
-require __DIR__ . '/connection.php';
-$error = ''; $success = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $firstName = mysqli_real_escape_string($connection, trim($_POST['first-name']));
-    $lastName = mysqli_real_escape_string($connection, trim($_POST['last-name']));
-    $email = mysqli_real_escape_string($connection, trim($_POST['email']));
-    $password = mysqli_real_escape_string($connection, trim($_POST['password']));
-
-    if (empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
-        $error = 'All fields are requireds!';
-        $success = '';
-    }
-
-    if (!$error) {
-        $query = "SELECT * FROM users WHERE e_mail = $email";
-        $statement = mysqli_prepare($connection, $query);
-        $result = mysqli_stmt_get_result($statement);
-
-        if (mysqli_num_rows($result) > 0) {
-            $error = 'An account already has these credentials!';
-            $success = '';
-        }
-    }
-
-    if (!$error) {
-        $query = 'INSERT INTO users (first_name, last_name, e_mail, password) VALUES ($firstName, $lastName, $email, $password)';
-        $statement = mysqli_prepare($connection, $query);
-
-        if ($result = mysqli_stmt_get_result($statement)) {
-            $success = 'Sign up successful! <a href="./sign_in.php"> Sign In Here! </a>';
-            $error = '';
-        } else {
-            $error = 'Sign up failed, please try again!';
-            $success = '';
-        }
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title> MLS · Sign Up </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title> MLS · Patient Registration </title>
 </head>
 
 <body>
-    <h2> Sign Up </h2>
+    <h1> Patient Registration </h1>
+    <p> Full name, phone, email, insurance, etc. </p>
 
-    <div>
-        <?php if (!empty($error)) {
-            echo $error;
-        } ?>
+    <form>
+        <div>
+            <label for="first-name"> First Name </label>
+            <input id="first-name" name="first-name" type="text">
+        </div>
 
-        <?php if (!empty($success)) {
-            echo $success;
-        } ?>
-    </div>
+        <div>
+            <label for="last-name"> Last Name </label>
+            <input name="last-name" type="text" id="last-name">
+        </div>
 
-    <form action="POST">
-        <label for="first-name"> First Name </label>
-        <input id="first-name" name="first-name" type="text">
+        <div>
+            <label for="phone"> Phone </label>
+            <input type="tel" id="phone" placeholder="+63 912 345 6789">
+        </div>
 
-        <label for="last-name"> Last Name </label>
-        <input name="last-name" type="text" id="last-name">
+        <div>
+            <label for="email"> Email </label>
+            <input type="email" id="email" placeholder="maria@example.com">
+        </div>
 
-        <label for="email"> E-Mail </label>
-        <input id="email" name="email" type="email">
+        <div>
+            <label for="hmo"> HMO / Insurance </label>
+            <select id="hmo">
+                <option> Maxicare </option>
+                <option> Intellicare </option>
+                <option> MediCard </option>
+                <option> Other </option>
+            </select>
+        </div>
 
-        <label for="password"> Password </label>
-        <input id="password" name="password" type="password">
+        <div>
+            <label for="specialty"> Preferred specialty </label>
+            <select id="specialty">
+                <option> Internal Medicine </option>
+                <option> Orthopedics </option>
+                <option> Dermatology </option>
+                <option> Gastroenterology </option>
+                <option> Neurology </option>
+                <option> Reproductive Health </option>
+            </select>
+        </div>
 
-        <button type="submit"> Sign Up </button>
+        <div>
+            <button type="submit"> Register & continue </button>
+        </div>
     </form>
 </body>
 
