@@ -1,4 +1,3 @@
-```php
 <?php
 
 /*
@@ -6,12 +5,16 @@
 | ADMIN ACCOUNT STATUS
 |--------------------------------------------------------------------------
 |
-| Development authentication is currently handled by admin_auth.php.
+| This page uses the application's normal login flow.
 |
 |--------------------------------------------------------------------------
 */
 
-require_once __DIR__ . '/admin_auth.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/../../data/connection.php';
 
 
 /*
@@ -191,4 +194,3 @@ header(
 exit();
 
 ?>
-```

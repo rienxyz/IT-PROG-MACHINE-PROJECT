@@ -1,15 +1,16 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-if (!isset($_SESSION['account_id']) || $_SESSION['role'] !== 'admin') {
-   header("Location: ../../sign_in.php?error=unauthorized");
-    exit();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-require_once '../db.php';
 
-header('Content-Type: application/json');
-header('Content-Disposition: attachment; filename="appointment_db_export_' . date('Y-m-d_H-i') . '.json"');
+require_once __DIR__ . '/../../data/connection.php';
 
-$tables = ['accounts', 'patients', 'doctors', 'secretaries', 'assignments', 'appointments', 'logs'];[cite: 6]
+header('Content-Type: application/json; charset=UTF-8');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Content-Disposition: attachment; filename="appointment_db_export_' . date('Y-m-d_H-i-s') . '.json"');
+
+$tables = ['accounts', 'patients', 'doctors', 'secretaries', 'assignments', 'appointments', 'logs'];
 $backup = [];
 
 foreach ($tables as $table) {

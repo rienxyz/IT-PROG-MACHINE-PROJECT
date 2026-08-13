@@ -1,17 +1,7 @@
-```php
 <?php
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}
-
-if (
-    !isset($_SESSION['account_id']) ||
-    !isset($_SESSION['role']) ||
-    $_SESSION['role'] !== 'admin'
-) {
-    header("Location: ../../sign_in.php?error=unauthorized");
-    exit();
 }
 
 require_once __DIR__ . '/../../data/connection.php';
@@ -495,6 +485,7 @@ $error = $_GET['error'] ?? '';
             $accountId = (int) $user['account_id'];
 
             $isCurrentAdmin =
+                isset($_SESSION['account_id']) &&
                 $accountId === (int) $_SESSION['account_id'];
 
             ?>
@@ -648,4 +639,3 @@ $error = $_GET['error'] ?? '';
 </body>
 
 </html>
-```

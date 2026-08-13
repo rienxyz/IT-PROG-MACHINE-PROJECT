@@ -1,4 +1,3 @@
-```php
 <?php
 
 /*
@@ -23,7 +22,7 @@
 |--------------------------------------------------------------------------
 */
 
-require_once __DIR__ . '/admin_auth.php';
+require_once __DIR__ . '/../../data/connection.php';
 
 
 /*
@@ -33,11 +32,12 @@ require_once __DIR__ . '/admin_auth.php';
 */
 
 $allowedStatuses = [
-    'pending',
     'confirmed',
+    'cancelled',
+    'no show',
     'rescheduled',
-    'completed',
-    'cancelled'
+    'declined',
+    'completed'
 ];
 
 
@@ -1607,4 +1607,3 @@ $appointmentResult =
 </body>
 
 </html>
-```

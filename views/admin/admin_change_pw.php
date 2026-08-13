@@ -1,4 +1,3 @@
-```php
 <?php
 
 /*
@@ -7,12 +6,16 @@
 |--------------------------------------------------------------------------
 |
 | Admin-only development functionality.
-| Authentication is currently handled by admin_auth.php.
+| Authentication is handled by the application's normal login flow.
 |
 |--------------------------------------------------------------------------
 */
 
-require_once __DIR__ . '/admin_auth.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/../../data/connection.php';
 
 
 /*
@@ -373,4 +376,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 
 </html>
-```

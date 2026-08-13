@@ -1,10 +1,9 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-if (!isset($_SESSION['account_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../../sign_in.php?error=unauthorized");
-    exit();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-require_once '../db.php';
+
+require_once __DIR__ . '/../../data/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $doctorId = (int)$_POST['doctor_id'];
