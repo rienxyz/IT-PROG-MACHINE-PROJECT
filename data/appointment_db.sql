@@ -50,18 +50,6 @@ CREATE TABLE IF NOT EXISTS `appointment_db`.`secretaries` (
 ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `appointment_db`.`assignments`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `appointment_db`.`assignments` (
-    `doctor_id` INT NOT NULL,
-    `secretary_id` INT NOT NULL,
-    PRIMARY KEY (`doctor_id`, `secretary_id`),
-    INDEX `secretary_id_idx` (`secretary_id` ASC),
-    CONSTRAINT `assignment_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `appointment_db`.`doctors` (`doctor_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT `assignment_secretary_id` FOREIGN KEY (`secretary_id`) REFERENCES `appointment_db`.`secretaries` (`secretary_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB;
-
--- -----------------------------------------------------
 -- Table `appointment_db`.`doctors`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `appointment_db`.`doctors` (
@@ -71,6 +59,18 @@ CREATE TABLE IF NOT EXISTS `appointment_db`.`doctors` (
     PRIMARY KEY (`doctor_id`),
     INDEX `account_id_idx` (`account_id` ASC),
     CONSTRAINT `doctor_account_id` FOREIGN KEY (`account_id`) REFERENCES `appointment_db`.`accounts` (`account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `appointment_db`.`assignments`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `appointment_db`.`assignments` (
+    `doctor_id` INT NOT NULL,
+    `secretary_id` INT NOT NULL,
+    PRIMARY KEY (`doctor_id`, `secretary_id`),
+    INDEX `secretary_id_idx` (`secretary_id` ASC),
+    CONSTRAINT `assignment_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `appointment_db`.`doctors` (`doctor_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `assignment_secretary_id` FOREIGN KEY (`secretary_id`) REFERENCES `appointment_db`.`secretaries` (`secretary_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
