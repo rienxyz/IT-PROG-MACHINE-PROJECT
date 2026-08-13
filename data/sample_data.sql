@@ -25,7 +25,7 @@ VALUES
     ('Robert', 'Navarro', '+63 942-123-4564', 'robert@hospital.com', 'secret123', 'secretary', 'active', 'verified'),
     ('Michelle', 'Co', '+63 943-123-4565', 'michelle@hospital.com', 'secret123', 'secretary', 'active', 'verified'),
     -- Admin
-    ('System', 'Administrator', '09999999999', 'admin@hospital.com', 'admin123', 'admin', 'active', 'verified');
+    ('System', 'Administrator', '+63 999-999-9999', 'admin@hospital.com', 'admin123', 'admin', 'active', 'verified');
 
 -- =====================================================
 -- PATIENTS
