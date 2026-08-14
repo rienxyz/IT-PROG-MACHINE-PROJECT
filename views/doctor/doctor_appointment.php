@@ -1,11 +1,14 @@
 <?php
 require_once '../../data/connection.php';
 
+// Single doctor context - doctor_id passed via GET (no sessions used)
 $doctor_id = isset($_GET['doctor_id']) ? (int) $_GET['doctor_id'] : 1;
 
+// Optional filters
 $status_filter = isset($_GET['status']) ? $_GET['status'] : '';
 $date_filter = isset($_GET['date']) ? $_GET['date'] : '';
 
+// Build query dynamically but still use prepared statements / bind_param
 $sql = "SELECT ap.appointment_id, ap.date, ap.time, ap.status, ap.room_number,
                acc.first_name, acc.last_name, acc.phone_number, p.insurance
         FROM appointments ap
@@ -41,7 +44,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-
+// Today's volume summary
 $stmt2 = $connection->prepare(
     "SELECT COUNT(*) AS total FROM appointments WHERE doctor_id = ? AND date = CURDATE()"
 );
@@ -65,6 +68,7 @@ $stmt3->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MLS · Doctor View</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 </head>
 
 <body>

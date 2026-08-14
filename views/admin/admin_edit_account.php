@@ -1,17 +1,7 @@
-```php
 <?php
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}
-
-if (
-    !isset($_SESSION['account_id']) ||
-    !isset($_SESSION['role']) ||
-    $_SESSION['role'] !== 'admin'
-) {
-    header("Location: ../../sign_in.php?error=unauthorized");
-    exit();
 }
 
 require_once __DIR__ . '/../../data/connection.php';
@@ -44,7 +34,10 @@ if ($accountId <= 0) {
 |--------------------------------------------------------------------------
 */
 
-if ($accountId === (int) $_SESSION['account_id']) {
+if (
+    isset($_SESSION['account_id']) &&
+    $accountId === (int) $_SESSION['account_id']
+) {
     header("Location: admin_read_account.php?error=cannot_modify_self");
     exit();
 }
@@ -744,6 +737,7 @@ if ($account['role'] === 'secretary') {
     <meta charset="UTF-8">
 
     <title>Edit Account</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 
 </head>
 
@@ -1006,4 +1000,3 @@ if ($account['role'] === 'secretary') {
 </body>
 
 </html>
-```

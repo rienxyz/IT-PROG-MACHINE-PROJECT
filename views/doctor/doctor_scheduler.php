@@ -1,10 +1,13 @@
 <?php
 require_once '../../data/connection.php';
 
+// Single doctor context - doctor_id passed via GET (no sessions used)
 $doctor_id = isset($_GET['doctor_id']) ? (int) $_GET['doctor_id'] : 1;
 
+// Selected date defaults to today
 $selected_date = isset($_GET['date']) && $_GET['date'] !== '' ? $_GET['date'] : date('Y-m-d');
 
+// Fetch all appointments for this doctor on the selected date, ordered by time
 $stmt = $connection->prepare(
     "SELECT ap.appointment_id, ap.time, ap.status, ap.room_number,
             acc.first_name, acc.last_name
@@ -24,6 +27,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
+// Compute gaps between consecutive appointments (in minutes) to help allocate time
 $gaps = [];
 for ($i = 1; $i < count($slots); $i++) {
     $prev = strtotime($slots[$i - 1]['time']);
@@ -38,6 +42,7 @@ for ($i = 1; $i < count($slots); $i++) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MLS · Doctor Scheduler</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 </head>
 
 <body>

@@ -3,11 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['account_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../../sign_in.php?error=unauthorized");
-    exit();
-}
-
 require_once __DIR__ . "/../../data/connection.php";
 
 $message = "";
@@ -142,6 +137,7 @@ $appointments = mysqli_query($connection, $query);
 <head>
     <meta charset="UTF-8">
     <title>Assign Room</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 </head>
 
 <body>

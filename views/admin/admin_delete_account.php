@@ -1,4 +1,3 @@
-```php
 <?php
 
 /*
@@ -6,7 +5,7 @@
 | ADMIN SAFE ACCOUNT DELETION
 |--------------------------------------------------------------------------
 |
-| Development authentication is currently handled by admin_auth.php.
+| This page uses the application's normal login flow.
 |
 | IMPORTANT:
 | This script intentionally refuses to delete accounts that have
@@ -16,7 +15,11 @@
 |--------------------------------------------------------------------------
 */
 
-require_once __DIR__ . '/admin_auth.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/../../data/connection.php';
 
 
 /*
@@ -251,6 +254,7 @@ if (count($relatedRecords) > 0) {
         <meta charset="UTF-8">
 
         <title>Account Cannot Be Deleted</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 
     </head>
 
@@ -333,6 +337,7 @@ if (
         <meta charset="UTF-8">
 
         <title>Confirm Account Deletion</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 
     </head>
 
@@ -543,6 +548,7 @@ try {
         <meta charset="UTF-8">
 
         <title>Account Deletion Failed</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 
     </head>
 
@@ -581,4 +587,3 @@ try {
 }
 
 ?>
-```

@@ -1,8 +1,9 @@
-```php
 <?php
 
-session_start();
-require_once __DIR__ . '/admin_auth.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../../data/connection.php';
 
 /*
@@ -90,14 +91,14 @@ $activeAccounts = getCount(
     $connection,
     "SELECT COUNT(*) AS total
      FROM accounts
-     WHERE status = 'active'"
+     WHERE activity_status = 'active'"
 );
 
 $inactiveAccounts = getCount(
     $connection,
     "SELECT COUNT(*) AS total
      FROM accounts
-     WHERE status = 'inactive'"
+     WHERE activity_status = 'inactive'"
 );
 
 
@@ -258,6 +259,7 @@ if ($result) {
     >
 
     <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 
 </head>
 
@@ -621,4 +623,3 @@ if ($result) {
 </body>
 
 </html>
-```

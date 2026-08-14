@@ -1,3 +1,46 @@
+<?php
+session_start();
+require __DIR__ . "/data/connection.php";
+$error = $success = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $firstName = mysqli_real_escape_string($connection, trim($_POST["first-name"]));
+    $lastName = mysqli_real_escape_string($connection, trim($_POST["last-name"]));
+    $email = mysqli_real_escape_string($connection, trim($_POST["email"]));
+    $password = mysqli_real_escape_string($connection, trim($_POST["password"]));
+    $phone = mysqli_real_escape_string($connection, trim($_POST["phone"]));
+    $hmo = mysqli_real_escape_string($connection, trim($_POST["hmo"] ?? ""));
+    $specialty = mysqli_real_escape_string($connection, trim($_POST["specialty"] ?? ""));
+
+    $query = "SELECT * FROM accounts WHERE e_mail = '$email'";
+    $result = mysqli_query($connection, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+        $error = "An account already has these credentials!";
+        $success = "";
+    }
+
+    if (!$error) {
+        $query = "INSERT INTO accounts (first_name, last_name, e_mail, password, phone_number, role, activity_status) " .
+            "VALUES ('$firstName', '$lastName', '$email', '$password', '$phone', 'patient', 'active')";
+
+        if ($result = mysqli_query($connection, $query)) {
+            $account_id = mysqli_insert_id($connection);
+            $query = "INSERT INTO patients (account_id, insurance, preferred_specialty) " .
+                "VALUES ($account_id, '$hmo', '$specialty')";
+
+            mysqli_query($connection, $query);
+
+            $success = 'Sign up successful! <a href="./sign_in.php"> Sign In Here! </a>';
+            $error = "";
+        } else {
+            $error = "Sign up failed, please try again!";
+            $success = "";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,60 +48,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <title> MLS · Patient Registration </title>
+    <title> MLS · Sign Up </title>
 </head>
 
 <body>
-    <h1> Patient Registration </h1>
-    <p> Full name, phone, email, insurance, etc. </p>
+    <h1> Sign Up </h1>
 
-    <form>
+    <div>
+        <?php echo $error ?: $success ?>
+    </div>
+
+    <form method="POST">
         <div>
             <label for="first-name"> First Name </label>
-            <input id="first-name" name="first-name" type="text">
+            <input name="first-name" id="first-name" type="text" placeholder="Enter Your First Name" required>
         </div>
 
         <div>
             <label for="last-name"> Last Name </label>
-            <input name="last-name" type="text" id="last-name">
-        </div>
-
-        <div>
-            <label for="phone"> Phone </label>
-            <input type="tel" id="phone" placeholder="+63 912 345 6789">
+            <input name="last-name" id="last-name" type="text" placeholder="Enter Your Last Name" required>
         </div>
 
         <div>
             <label for="email"> Email </label>
-            <input type="email" id="email" placeholder="maria@example.com">
+            <input name="email" id="email" type="email" placeholder="email@domain.com" required>
         </div>
 
         <div>
-            <label for="hmo"> HMO / Insurance </label>
-            <select id="hmo">
-                <option> Maxicare </option>
+            <label for="password"> Password </label>
+            <input name="password" id="password" type="password" placeholder="********" required>
+        </div>
+
+        <div>
+            <label for="phone"> Phone </label>
+            <input name="phone" type="tel" id="phone" placeholder="+00 000-000-0000" pattern="\+[0-9]{2} [0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+        </div>
+
+        <div>
+            <label for="hmo"> HMO or Insurance </label>
+            <select name="hmo" id="hmo" required>
+                <option selected hidden disabled value=""> Select Your Primary HMO or Insurance </option>
+                <option> iCare </option>
                 <option> Intellicare </option>
+                <option> Maxicare </option>
                 <option> MediCard </option>
+                <option> Philcare </option>
                 <option> Other </option>
             </select>
         </div>
 
         <div>
-            <label for="specialty"> Preferred specialty </label>
-            <select id="specialty">
-                <option> Internal Medicine </option>
-                <option> Orthopedics </option>
+            <label for="specialty"> Preferred Specialty </label>
+            <select name="specialty" id="specialty" required>
+                <option selected hidden disabled value=""> Select Your Preffered Doctor"s Specialty </option>
                 <option> Dermatology </option>
                 <option> Gastroenterology </option>
+                <option> Internal Medicine </option>
                 <option> Neurology </option>
+                <option> Orthopedics </option>
                 <option> Reproductive Health </option>
             </select>
         </div>
 
         <div>
-            <button type="submit"> Register & continue </button>
+            <span> Already have an account? <a href="sign_in.php"> Sign-in instead! </a></span>
+        </div>
+
+        <div>
+            <button type="submit"> Sign Up </button>
         </div>
     </form>
 </body>

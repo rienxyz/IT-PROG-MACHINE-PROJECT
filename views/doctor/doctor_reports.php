@@ -1,8 +1,10 @@
 <?php
 require_once '../../data/connection.php';
 
+// Single doctor context - doctor_id passed via GET (no sessions used)
 $doctor_id = isset($_GET['doctor_id']) ? (int) $_GET['doctor_id'] : 1;
 
+// Appointment counts grouped by status
 $stmt = $connection->prepare(
     "SELECT status, COUNT(*) AS total
      FROM appointments
@@ -19,6 +21,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
+// Total unique patients seen
 $stmt2 = $connection->prepare(
     "SELECT COUNT(DISTINCT patient_id) AS total FROM appointments WHERE doctor_id = ?"
 );
@@ -27,6 +30,7 @@ $stmt2->execute();
 $unique_patients = $stmt2->get_result()->fetch_assoc()['total'];
 $stmt2->close();
 
+// Recent logs tied to this doctor's appointments
 $stmt3 = $connection->prepare(
     "SELECT l.log_id, l.content, l.timestamp, l.appointment_id
      FROM logs l
@@ -52,6 +56,7 @@ $stmt3->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MLS · Doctor Reports</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 </head>
 
 <body>

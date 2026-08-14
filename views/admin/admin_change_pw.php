@@ -1,4 +1,3 @@
-```php
 <?php
 
 /*
@@ -7,12 +6,16 @@
 |--------------------------------------------------------------------------
 |
 | Admin-only development functionality.
-| Authentication is currently handled by admin_auth.php.
+| Authentication is handled by the application's normal login flow.
 |
 |--------------------------------------------------------------------------
 */
 
-require_once __DIR__ . '/admin_auth.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/../../data/connection.php';
 
 
 /*
@@ -233,6 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
 
     <title>Reset Password</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 
 </head>
 
@@ -373,4 +377,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 
 </html>
-```

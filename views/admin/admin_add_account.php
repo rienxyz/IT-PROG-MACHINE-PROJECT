@@ -3,11 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['account_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../../sign_in.php?error=unauthorized");
-    exit();
-}
-
 require_once __DIR__ . '/../../data/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -173,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>MLS · Add Account</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 </head>
 <body>
     <h1>Create New Account</h1>

@@ -1,10 +1,9 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-if (!isset($_SESSION['account_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../../sign_in.php?error=unauthorized");
-    exit();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-require_once '../db.php';
+
+require_once __DIR__ . '/../../data/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $doctorId = (int)$_POST['doctor_id'];
@@ -26,6 +25,7 @@ $doctorsRes = mysqli_query($connection, $query);
 <head>
     <meta charset="UTF-8">
     <title>MLS · Add Specialty</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 </head>
 <body>
     <h1>Set Doctor Specialty</h1>
