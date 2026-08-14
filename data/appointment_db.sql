@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `appointment_db`.`logs` (
     `log_id` INT NOT NULL AUTO_INCREMENT,
     `appointment_id` INT NULL DEFAULT NULL,
     `content` TEXT NULL DEFAULT NULL,
-    `timestamp` TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`log_id`),
     INDEX `appointment_id_idx` (`appointment_id` ASC),
     CONSTRAINT `appointment_id` FOREIGN KEY (`appointment_id`) REFERENCES `appointment_db`.`appointments` (`appointment_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
