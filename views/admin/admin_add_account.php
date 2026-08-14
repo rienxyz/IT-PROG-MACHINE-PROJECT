@@ -167,9 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../styles/style.css">
     <title>MLS · Add Account</title>
 </head>
-<body>
+<body class="admin-page">
     <h1>Create New Account</h1>
     <form method="POST" action="admin_add_account.php">
         <label>First Name: <input type="text" name="first_name" required></label><br><br>

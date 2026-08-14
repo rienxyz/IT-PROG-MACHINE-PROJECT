@@ -64,9 +64,9 @@ if ($stmt = mysqli_prepare($connection, $fetch_query)) {
 <head>
     <meta charset="UTF-8">
     <title>My Profile</title>
-    <link rel="stylesheet" href="../../styles/placeholder.css">
+    <link rel="stylesheet" href="../../styles/style.css">
 </head>
-<body>
+<body class="patient-page">
     <nav>
         <a href="patient_dashboard.php">Dashboard</a>
         <a href="patient_find_doctor.php">Find Doctor</a>

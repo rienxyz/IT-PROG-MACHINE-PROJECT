@@ -401,3 +401,91 @@ button[type="reset"]:hover {
         transition: none !important;
     }
 }
+
+/* ================================================================
+   ADMIN PAGES
+   ================================================================ */
+
+body.admin-page {
+    max-width: 1180px;
+    padding: 2.5rem 1.5rem 5rem;
+}
+
+body.admin-page h1 {
+    margin-bottom: 1rem;
+}
+
+body.admin-page > p:first-of-type {
+    margin-bottom: 1.5rem;
+}
+
+body.admin-page table {
+    font-size: 0.92rem;
+}
+
+body.admin-page table[border="1"] {
+    border-collapse: collapse;
+}
+
+body.admin-page td,
+body.admin-page th {
+    white-space: normal;
+}
+
+body.admin-page form[style*="display:inline"],
+body.admin-page form[style*="display: inline"] {
+    display: inline !important;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+body.admin-page button {
+    min-height: 2.4rem;
+}
+
+body.admin-page input,
+body.admin-page select,
+body.admin-page textarea {
+    max-width: 32rem;
+}
+
+body.admin-page .admin-actions,
+body.admin-page nav {
+    margin-bottom: 1.5rem;
+}
+
+body.admin-page table a {
+    white-space: nowrap;
+}
+
+body.admin-page hr {
+    margin: 2rem 0;
+}
+
+/* Wide tables remain usable on smaller screens. */
+@media (max-width: 900px) {
+    body.admin-page {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    body.admin-page table {
+        font-size: 0.88rem;
+    }
+}
+
+/* ================================================================
+   PATIENT PAGES
+   ================================================================ */
+
+body.patient-page {
+    max-width: 980px;
+}
+
+body.patient-page table {
+    font-size: 0.92rem;
+}
+

@@ -63,9 +63,9 @@ if ($doc_result) {
 <head>
     <meta charset="UTF-8">
     <title>Book Appointment</title>
-    <link rel="stylesheet" href="../../styles/placeholder.css">
+    <link rel="stylesheet" href="../../styles/style.css">
 </head>
-<body>
+<body class="patient-page">
     <nav>
         <a href="patient_dashboard.php">Dashboard</a>
         <a href="../../sign_out.php">Sign Out</a>

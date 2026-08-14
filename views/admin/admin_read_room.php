@@ -111,10 +111,12 @@ $result = mysqli_stmt_get_result($stmt);
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../styles/style.css">
     <title>Room Overview</title>
 </head>
 
-<body>
+<body class="admin-page">
 
 <h1>Room Overview</h1>
 

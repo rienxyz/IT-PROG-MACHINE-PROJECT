@@ -252,12 +252,14 @@ if (count($relatedRecords) > 0) {
     <head>
 
         <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../styles/style.css">
 
         <title>Account Cannot Be Deleted</title>
 
     </head>
 
-    <body>
+    <body class="admin-page">
 
     <h1>Account Cannot Be Deleted</h1>
 
@@ -339,7 +341,7 @@ if (
 
     </head>
 
-    <body>
+    <body class="admin-page">
 
     <h1>Confirm Account Deletion</h1>
 
@@ -549,7 +551,7 @@ try {
 
     </head>
 
-    <body>
+    <body class="admin-page">
 
     <h1>Account Was Not Deleted</h1>
 

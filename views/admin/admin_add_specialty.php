@@ -24,9 +24,11 @@ $doctorsRes = mysqli_query($connection, $query);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../styles/style.css">
     <title>MLS · Add Specialty</title>
 </head>
-<body>
+<body class="admin-page">
     <h1>Set Doctor Specialty</h1>
     <form method="POST" action="admin_add_specialty.php">
         <label>Select Doctor: 
