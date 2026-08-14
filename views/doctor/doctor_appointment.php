@@ -2,6 +2,13 @@
 require_once '../../data/connection.php';
 require_once '../../header.php';
 
+session_start();
+
+if (!isset($_SESSION['account_id'])) {
+    header("Location: ../../sign_in.php");
+    exit();
+}
+
 $doctor_id = isset($_GET['doctor_id']) ? (int) $_GET['doctor_id'] : 1;
 
 $sql = "SELECT ap.appointment_id, ap.date, ap.time, ap.status, ap.room_number,

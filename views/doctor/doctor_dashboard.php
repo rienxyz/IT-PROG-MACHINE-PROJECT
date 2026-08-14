@@ -1,6 +1,13 @@
 <?php
 require_once '../../data/connection.php';
 
+session_start();
+
+if (!isset($_SESSION['account_id'])) {
+    header("Location: ../../sign_in.php");
+    exit();
+}
+
 $doctor_id = isset($_GET['doctor_id']) ? (int) $_GET['doctor_id'] : 1;
 
 $stmt = $connection->prepare(
