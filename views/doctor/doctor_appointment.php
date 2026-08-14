@@ -1,80 +1,62 @@
 <?php
-session_start();
 require_once '../../data/connection.php';
 
-// if (!isset($_SESSION['account_id']) || $_SESSION['role'] !== 'doctor') {
-//     die("Access denied. Please log in as a doctor.");
-// }
-// $account_id = $_SESSION['account_id'];
-$account_id = 1;
+$doctor_id = isset($_GET['doctor_id']) ? (int) $_GET['doctor_id'] : 1;
 
-// get the doctor_id for this account
-$stmt = $connection->prepare("SELECT doctor_id FROM doctors WHERE doctor_id = ?");
-$stmt->bind_param("i", $account_id);
+$status_filter = isset($_GET['status']) ? $_GET['status'] : '';
+$date_filter = isset($_GET['date']) ? $_GET['date'] : '';
+
+$sql = "SELECT ap.appointment_id, ap.date, ap.time, ap.status, ap.room_number,
+               acc.first_name, acc.last_name, acc.phone_number, p.insurance
+        FROM appointments ap
+        JOIN patients p ON ap.patient_id = p.patient_id
+        JOIN accounts acc ON p.account_id = acc.account_id
+        WHERE ap.doctor_id = ?";
+
+$types = "i";
+$params = [$doctor_id];
+
+if ($status_filter !== '') {
+    $sql .= " AND ap.status = ?";
+    $types .= "s";
+    $params[] = $status_filter;
+}
+
+if ($date_filter !== '') {
+    $sql .= " AND ap.date = ?";
+    $types .= "s";
+    $params[] = $date_filter;
+}
+
+$sql .= " ORDER BY ap.date ASC, ap.time ASC";
+
+$stmt = $connection->prepare($sql);
+$stmt->bind_param($types, ...$params);
 $stmt->execute();
-$doctor = $stmt->get_result()->fetch_assoc();
+$result = $stmt->get_result();
+
+$appointments = [];
+while ($row = $result->fetch_assoc()) {
+    $appointments[] = $row;
+}
 $stmt->close();
 
-if (!$doctor) {
-    die("Doctor profile not found for this account.");
-}
-$doctor_id = $doctor['doctor_id'];
 
-$allowed_statuses = ['confirmed', 'completed', 'cancelled', 'no show', 'rescheduled', 'declined'];
-$update_message = "";
+$stmt2 = $connection->prepare(
+    "SELECT COUNT(*) AS total FROM appointments WHERE doctor_id = ? AND date = CURDATE()"
+);
+$stmt2->bind_param("i", $doctor_id);
+$stmt2->execute();
+$today_total = $stmt2->get_result()->fetch_assoc()['total'];
+$stmt2->close();
 
-// handle status update form
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
-    $appointment_id = (int) $_POST['appointment_id'];
-    $new_status = $_POST['new_status'];
-
-    if (!in_array($new_status, $allowed_statuses)) {
-        $update_message = "Invalid status submitted.";
-    } else {
-        $stmt = $connection->prepare("UPDATE appointments SET status = ? WHERE appointment_id = ? AND doctor_id = ?");
-        $stmt->bind_param("sii", $new_status, $appointment_id, $doctor_id);
-        $stmt->execute();
-        $stmt->close();
-
-        // simple log entry
-        $log_content = "Status changed to '$new_status' by doctor (account_id $account_id)";
-        $stmt = $connection->prepare("INSERT INTO logs (appointment_id, content) VALUES (?, ?)");
-        $stmt->bind_param("is", $appointment_id, $log_content);
-        $stmt->execute();
-        $stmt->close();
-
-        $update_message = "Appointment #$appointment_id updated to '$new_status'.";
-    }
-}
-
-// which date to show
-$filter_date = $_GET['date'] ?? '';
-if ($filter_date === '') {
-    $filter_date = date('Y-m-d');
-}
-
-// get appointments for the selected date
-$stmt = $connection->prepare("SELECT a.appointment_id, a.time, a.room_number, a.status, a.insurance,
-        acc.first_name, acc.last_name
-    FROM appointments a
-    JOIN patients p ON a.patient_id = p.patient_id
-    JOIN accounts acc ON p.account_id = acc.account_id
-    WHERE a.doctor_id = ? AND a.date = ?
-    ORDER BY a.time ASC");
-$stmt->bind_param("is", $doctor_id, $filter_date);
-$stmt->execute();
-$appointments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
-
-// count totals for the little summary line
-$total = count($appointments);
-$pending_hmo = 0;
-foreach ($appointments as $appt) {
-    $is_settled = in_array($appt['status'], ['completed', 'cancelled', 'declined']);
-    if ($appt['insurance'] && !$is_settled) {
-        $pending_hmo++;
-    }
-}
+$stmt3 = $connection->prepare(
+    "SELECT COUNT(*) AS total FROM appointments WHERE doctor_id = ? AND date = CURDATE() AND status = 'confirmed'"
+);
+$stmt3->bind_param("i", $doctor_id);
+$stmt3->execute();
+$pending_today = $stmt3->get_result()->fetch_assoc()['total'];
+$stmt3->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,69 +64,52 @@ foreach ($appointments as $appt) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> MLS · Doctor View </title>
+    <title>MLS · Doctor View</title>
 </head>
 
 <body>
-    <h1> Doctor View </h1>
-    <p><strong> Service providers · track patient volume · allocated time </strong></p>
+    <h1>Doctor View</h1>
+    <p><strong>Service providers &middot; track patient volume &middot; allocated time</strong></p>
 
-    <?php if ($update_message): ?>
-        <p><em><?php echo $update_message; ?></em></p>
-    <?php endif; ?>
-
-    <form method="get">
-        <label for="date">View date:</label>
-        <input type="date" id="date" name="date" value="<?php echo $filter_date; ?>">
-        <button type="submit">Go</button>
+    <h3>Filter</h3>
+    <form method="get" action="doctor_appointment.php">
+        <input type="hidden" name="doctor_id" value="<?= (int) $doctor_id ?>">
+        <label>Status:
+            <select name="status">
+                <option value="">All</option>
+                <option value="confirmed" <?= $status_filter === 'confirmed' ? 'selected' : '' ?>>Confirmed</option>
+                <option value="cancelled" <?= $status_filter === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                <option value="no show" <?= $status_filter === 'no show' ? 'selected' : '' ?>>No show</option>
+                <option value="rescheduled" <?= $status_filter === 'rescheduled' ? 'selected' : '' ?>>Rescheduled</option>
+                <option value="declined" <?= $status_filter === 'declined' ? 'selected' : '' ?>>Declined</option>
+                <option value="completed" <?= $status_filter === 'completed' ? 'selected' : '' ?>>Completed</option>
+            </select>
+        </label>
+        <label>Date: <input type="date" name="date" value="<?= htmlspecialchars($date_filter) ?>"></label>
+        <button type="submit">Apply</button>
     </form>
 
-    <h3> My appointments — <?php echo $filter_date; ?> </h3>
-
-    <?php if ($total === 0): ?>
-        <p>No appointments scheduled for this date.</p>
+    <h3>My appointments</h3>
+    <?php if (count($appointments) === 0): ?>
+        <p>No appointments found.</p>
     <?php else: ?>
-        <table border="1" cellpadding="6">
-            <tr>
-                <th>Time</th>
-                <th>Patient</th>
-                <th>Room</th>
-                <th>Insurance</th>
-                <th>Status</th>
-                <th>Update</th>
-            </tr>
-            <?php foreach ($appointments as $appt): ?>
-                <tr>
-                    <td><?php echo $appt['time']; ?></td>
-                    <td><?php echo $appt['first_name'] . ' ' . $appt['last_name']; ?></td>
-                    <td><?php echo $appt['room_number'] ?? '—'; ?></td>
-                    <td><?php echo $appt['insurance'] ?? 'Self-pay'; ?></td>
-                    <td><?php echo $appt['status'] ?? 'pending'; ?></td>
-                    <td>
-                        <form method="post" style="display:inline;">
-                            <input type="hidden" name="appointment_id" value="<?php echo (int) $appt['appointment_id']; ?>">
-                            <select name="new_status">
-                                <?php foreach ($allowed_statuses as $s): ?>
-                                    <option value="<?php echo $s; ?>" <?php echo ($appt['status'] === $s) ? 'selected' : ''; ?>>
-                                        <?php echo $s; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <button type="submit" name="update_status" value="1">Save</button>
-                        </form>
-                    </td>
-                </tr>
+        <ul>
+            <?php foreach ($appointments as $a): ?>
+                <li>
+                    <?= htmlspecialchars($a['date']) ?> &middot; <?= htmlspecialchars(substr($a['time'], 0, 5)) ?>
+                    &middot; Patient: <?= htmlspecialchars($a['first_name'] . ' ' . $a['last_name']) ?>
+                    &middot; Room: <?= htmlspecialchars($a['room_number'] ?? 'N/A') ?>
+                    &middot; Status: <?= htmlspecialchars($a['status'] ?? 'N/A') ?>
+                    &middot; Insurance: <?= htmlspecialchars($a['insurance'] ?? 'N/A') ?>
+                </li>
             <?php endforeach; ?>
-        </table>
+        </ul>
     <?php endif; ?>
 
-    <h3> Today's volume </h3>
-    <p><?php echo $total; ?> consultations · <?php echo $pending_hmo; ?> pending HMO </p>
+    <h3>Today's volume</h3>
+    <p><?= (int) $today_total ?> consultation(s) &middot; <?= (int) $pending_today ?> confirmed pending</p>
 
-    <p>
-        <a href="doctor_scheduler.php">Manage schedule</a> |
-        <a href="doctor_reports.php">View reports</a>
-    </p>
+    <p><a href="doctor_dashboard.php?doctor_id=<?= (int) $doctor_id ?>">Back to Dashboard</a></p>
 </body>
 
 </html>
