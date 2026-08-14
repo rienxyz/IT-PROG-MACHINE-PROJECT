@@ -1,37 +1,19 @@
 <?php
 require_once '../../data/connection.php';
+require_once '../../header.php';
 
 $doctor_id = isset($_GET['doctor_id']) ? (int) $_GET['doctor_id'] : 1;
 
-$status_filter = isset($_GET['status']) ? $_GET['status'] : '';
-$date_filter = isset($_GET['date']) ? $_GET['date'] : '';
-
 $sql = "SELECT ap.appointment_id, ap.date, ap.time, ap.status, ap.room_number,
-               acc.first_name, acc.last_name, acc.phone_number, p.insurance
-        FROM appointments ap
-        JOIN patients p ON ap.patient_id = p.patient_id
-        JOIN accounts acc ON p.account_id = acc.account_id
-        WHERE ap.doctor_id = ?";
-
-$types = "i";
-$params = [$doctor_id];
-
-if ($status_filter !== '') {
-    $sql .= " AND ap.status = ?";
-    $types .= "s";
-    $params[] = $status_filter;
-}
-
-if ($date_filter !== '') {
-    $sql .= " AND ap.date = ?";
-    $types .= "s";
-    $params[] = $date_filter;
-}
-
-$sql .= " ORDER BY ap.date ASC, ap.time ASC";
+        acc.first_name, acc.last_name, acc.phone_number, p.insurance
+    FROM appointments ap
+    JOIN patients p ON ap.patient_id = p.patient_id
+    JOIN accounts acc ON p.account_id = acc.account_id
+    WHERE ap.doctor_id = ?
+    ORDER BY ap.date ASC, ap.time ASC";
 
 $stmt = $connection->prepare($sql);
-$stmt->bind_param($types, ...$params);
+$stmt->bind_param("i", $doctor_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -40,7 +22,6 @@ while ($row = $result->fetch_assoc()) {
     $appointments[] = $row;
 }
 $stmt->close();
-
 
 $stmt2 = $connection->prepare(
     "SELECT COUNT(*) AS total FROM appointments WHERE doctor_id = ? AND date = CURDATE()"
@@ -65,51 +46,66 @@ $stmt3->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MLS · Doctor View</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 </head>
 
 <body>
-    <h1>Doctor View</h1>
-    <p><strong>Service providers &middot; track patient volume &middot; allocated time</strong></p>
+    <h1>My Appointments</h1>
+    <p>Track patient volume and allocated time</p>
 
-    <h3>Filter</h3>
-    <form method="get" action="doctor_appointment.php">
-        <input type="hidden" name="doctor_id" value="<?= (int) $doctor_id ?>">
-        <label>Status:
-            <select name="status">
-                <option value="">All</option>
-                <option value="confirmed" <?= $status_filter === 'confirmed' ? 'selected' : '' ?>>Confirmed</option>
-                <option value="cancelled" <?= $status_filter === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
-                <option value="no show" <?= $status_filter === 'no show' ? 'selected' : '' ?>>No show</option>
-                <option value="rescheduled" <?= $status_filter === 'rescheduled' ? 'selected' : '' ?>>Rescheduled</option>
-                <option value="declined" <?= $status_filter === 'declined' ? 'selected' : '' ?>>Declined</option>
-                <option value="completed" <?= $status_filter === 'completed' ? 'selected' : '' ?>>Completed</option>
-            </select>
-        </label>
-        <label>Date: <input type="date" name="date" value="<?= htmlspecialchars($date_filter) ?>"></label>
-        <button type="submit">Apply</button>
-    </form>
+    <h3>Navigate</h3>
+    <ul>
+        <li><a href="doctor_dashboard.php?doctor_id=<?= (int) $doctor_id ?>">Dashboard</a></li>
+        <li>My Appointments (current)</li>
+        <li><a href="doctor_scheduler.php?doctor_id=<?= (int) $doctor_id ?>">Scheduler</a></li>
+        <li><a href="doctor_reports.php?doctor_id=<?= (int) $doctor_id ?>">Reports</a></li>
+    </ul>
 
-    <h3>My appointments</h3>
+    <h2>Today's volume</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th scope="row">Consultations today</th>
+                <td><?= (int) $today_total ?></td>
+            </tr>
+            <tr>
+                <th scope="row">Confirmed pending today</th>
+                <td><?= (int) $pending_today ?></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>All appointments (<?= count($appointments) ?>)</h2>
     <?php if (count($appointments) === 0): ?>
         <p>No appointments found.</p>
     <?php else: ?>
-        <ul>
-            <?php foreach ($appointments as $a): ?>
-                <li>
-                    <?= htmlspecialchars($a['date']) ?> &middot; <?= htmlspecialchars(substr($a['time'], 0, 5)) ?>
-                    &middot; Patient: <?= htmlspecialchars($a['first_name'] . ' ' . $a['last_name']) ?>
-                    &middot; Room: <?= htmlspecialchars($a['room_number'] ?? 'N/A') ?>
-                    &middot; Status: <?= htmlspecialchars($a['status'] ?? 'N/A') ?>
-                    &middot; Insurance: <?= htmlspecialchars($a['insurance'] ?? 'N/A') ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Patient</th>
+                    <th>Phone</th>
+                    <th>Room</th>
+                    <th>Insurance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($appointments as $a): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($a['date']) ?></td>
+                        <td><?= htmlspecialchars(substr($a['time'], 0, 5)) ?></td>
+                        <td><?= htmlspecialchars($a['first_name'] . ' ' . $a['last_name']) ?></td>
+                        <td><?= htmlspecialchars($a['phone_number'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($a['room_number'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($a['insurance'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($a['status'] ?? 'N/A') ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     <?php endif; ?>
-
-    <h3>Today's volume</h3>
-    <p><?= (int) $today_total ?> consultation(s) &middot; <?= (int) $pending_today ?> confirmed pending</p>
-
-    <p><a href="doctor_dashboard.php?doctor_id=<?= (int) $doctor_id ?>">Back to Dashboard</a></p>
 </body>
 
 </html>

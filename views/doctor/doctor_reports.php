@@ -5,9 +5,9 @@ $doctor_id = isset($_GET['doctor_id']) ? (int) $_GET['doctor_id'] : 1;
 
 $stmt = $connection->prepare(
     "SELECT status, COUNT(*) AS total
-     FROM appointments
-     WHERE doctor_id = ?
-     GROUP BY status"
+    FROM appointments
+    WHERE doctor_id = ?
+    GROUP BY status"
 );
 $stmt->bind_param("i", $doctor_id);
 $stmt->execute();
@@ -29,11 +29,11 @@ $stmt2->close();
 
 $stmt3 = $connection->prepare(
     "SELECT l.log_id, l.content, l.timestamp, l.appointment_id
-     FROM logs l
-     JOIN appointments ap ON l.appointment_id = ap.appointment_id
-     WHERE ap.doctor_id = ?
-     ORDER BY l.timestamp DESC
-     LIMIT 20"
+    FROM logs l
+    JOIN appointments ap ON l.appointment_id = ap.appointment_id
+    WHERE ap.doctor_id = ?
+    ORDER BY l.timestamp DESC
+    LIMIT 20"
 );
 $stmt3->bind_param("i", $doctor_id);
 $stmt3->execute();
@@ -52,40 +52,80 @@ $stmt3->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MLS · Doctor Reports</title>
+    <link rel="stylesheet" href="../../styles/style.css"></link>
 </head>
 
 <body>
     <h1>Doctor Reports</h1>
+    <p>Volume and activity summary</p>
 
-    <h3>Appointments by status</h3>
+    <h3>Navigate</h3>
+    <ul>
+        <li><a href="doctor_dashboard.php?doctor_id=<?= (int) $doctor_id ?>">Dashboard</a></li>
+        <li><a href="doctor_appointment.php?doctor_id=<?= (int) $doctor_id ?>">My Appointments</a></li>
+        <li><a href="doctor_scheduler.php?doctor_id=<?= (int) $doctor_id ?>">Scheduler</a></li>
+        <li>Reports (current)</li>
+    </ul>
+
+    <h2>Summary</h2>
+    <table>
+        <tbody>
+            <tr>
+                <th scope="row">Distinct patients seen</th>
+                <td><?= (int) $unique_patients ?></td>
+            </tr>
+            <tr>
+                <th scope="row">Total appointments</th>
+                <td><?= array_sum($status_counts) ?></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Appointments by status</h2>
     <?php if (count($status_counts) === 0): ?>
         <p>No appointment data available.</p>
     <?php else: ?>
-        <ul>
-            <?php foreach ($status_counts as $status => $count): ?>
-                <li><?= htmlspecialchars(ucfirst($status)) ?>: <?= (int) $count ?></li>
-            <?php endforeach; ?>
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($status_counts as $status => $count): ?>
+                    <tr>
+                        <td><?= htmlspecialchars(ucfirst($status)) ?></td>
+                        <td><?= (int) $count ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     <?php endif; ?>
 
-    <h3>Unique patients seen</h3>
-    <p><?= (int) $unique_patients ?> distinct patient(s)</p>
-
-    <h3>Recent activity logs</h3>
+    <h2>Recent activity logs</h2>
     <?php if (count($logs) === 0): ?>
         <p>No logs available.</p>
     <?php else: ?>
-        <ul>
-            <?php foreach ($logs as $log): ?>
-                <li>
-                    [<?= htmlspecialchars($log['timestamp']) ?>] Appointment #<?= (int) $log['appointment_id'] ?>:
-                    <?= htmlspecialchars($log['content']) ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Appointment</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($logs as $log): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($log['timestamp']) ?></td>
+                        <td>#<?= (int) $log['appointment_id'] ?></td>
+                        <td><?= htmlspecialchars($log['content']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     <?php endif; ?>
-
-    <p><a href="doctor_dashboard.php?doctor_id=<?= (int) $doctor_id ?>">Back to Dashboard</a></p>
 </body>
 
 </html>
