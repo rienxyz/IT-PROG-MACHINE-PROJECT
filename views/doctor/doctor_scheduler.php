@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . './../../data/connection.php'; 
+require_once __DIR__ . '/../../data/connection.php'; 
 
 session_start();
 
@@ -58,6 +58,7 @@ for ($i = 1; $i < count($slots); $i++) {
         <li><a href="doctor_appointment.php?doctor_id=<?= (int) $doctor_id ?>">My Appointments</a></li>
         <li>Scheduler (current)</li>
         <li><a href="doctor_reports.php?doctor_id=<?= (int) $doctor_id ?>">Reports</a></li>
+        <li><a href="../../sign_out.php">Sign Out</a></li>
     </ul>
 
     <form method="get" action="doctor_scheduler.php">

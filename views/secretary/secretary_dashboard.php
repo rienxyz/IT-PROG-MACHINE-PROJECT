@@ -97,7 +97,7 @@ if ($todayListResult) {
 <h1>Secretary Dashboard</h1>
 
 <p>
-    Welcome, <?= htmlspecialchars($_SESSION['first_name'] ?? '') ?>
+    Welcome, <?= htmlspecialchars($_SESSION['full_name'] ?? '') ?>
     <?php if ($_SESSION['department']): ?>
         (Department: <?= htmlspecialchars($_SESSION['department']) ?>)
     <?php endif; ?>

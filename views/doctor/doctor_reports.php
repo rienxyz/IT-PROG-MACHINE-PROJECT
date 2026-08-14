@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . './../../data/connection.php'; 
+require_once __DIR__ . '/../../data/connection.php'; 
 
 session_start();
 
@@ -72,6 +72,7 @@ $stmt3->close();
         <li><a href="doctor_appointment.php?doctor_id=<?= (int) $doctor_id ?>">My Appointments</a></li>
         <li><a href="doctor_scheduler.php?doctor_id=<?= (int) $doctor_id ?>">Scheduler</a></li>
         <li>Reports (current)</li>
+        <li><a href="../../sign_out.php">Sign Out</a></li>
     </ul>
 
     <h2>Summary</h2>

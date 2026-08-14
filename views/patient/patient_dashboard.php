@@ -6,7 +6,7 @@ if (!isset($_SESSION['account_id'])) {
     exit();
 }
 
-require_once __DIR__ . './../../data/connection.php'; 
+require_once __DIR__ . '/../../data/connection.php'; 
 
 $account_id = $_SESSION['account_id'];
 $appointments = [];

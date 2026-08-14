@@ -196,15 +196,15 @@ $recentAccounts = [];
 
 $query = "
     SELECT
-        id,
+        account_id,
         first_name,
         last_name,
-        email,
+        e_mail,
         role,
-        status,
+        activity_status,
         verification_status
     FROM accounts
-    ORDER BY id DESC
+    ORDER BY account_id DESC
     LIMIT 5
 ";
 
@@ -230,7 +230,7 @@ $recentAppointments = [];
 $query = "
     SELECT *
     FROM appointments
-    ORDER BY id DESC
+    ORDER BY appointment_id DESC
     LIMIT 5
 ";
 
@@ -401,7 +401,7 @@ if ($result) {
         <tr>
 
             <td>
-                <?= htmlspecialchars($account['id']) ?>
+                <?= htmlspecialchars($account['account_id']) ?>
             </td>
 
             <td>
@@ -414,7 +414,7 @@ if ($result) {
             </td>
 
             <td>
-                <?= htmlspecialchars($account['email']) ?>
+                <?= htmlspecialchars($account['e_mail']) ?>
             </td>
 
             <td>
@@ -422,7 +422,7 @@ if ($result) {
             </td>
 
             <td>
-                <?= htmlspecialchars($account['status']) ?>
+                <?= htmlspecialchars($account['activity_status']) ?>
             </td>
 
             <td>
@@ -492,7 +492,7 @@ if ($result) {
 
             <td>
                 <?= htmlspecialchars(
-                    $appointment['id'] ?? ''
+                    $appointment['appointment_id'] ?? ''
                 ) ?>
             </td>
 
