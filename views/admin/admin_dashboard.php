@@ -619,6 +619,11 @@ if ($result) {
         </a>
     </li>
 
+    <li>
+        <a href="../../sign_out.php">
+            Sign Out
+        </a>
+    </li>
 </ul>
 
 </body>

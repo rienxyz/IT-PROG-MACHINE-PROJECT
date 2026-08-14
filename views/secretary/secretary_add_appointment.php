@@ -184,7 +184,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="secretary_dashboard.php">← Back to Dashboard</a>
     |
     <a href="secretary_read_appointment.php">View All Appointments</a>
-    <a href="../../sign_out.php">Sign Out</a>
 </p>
 
 <?php if ($success !== ''): ?>
